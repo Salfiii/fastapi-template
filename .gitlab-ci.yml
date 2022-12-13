@@ -1,0 +1,8 @@
+include:
+  - project: 'ci-cd'
+    ref: master
+    file: '/pipelines/.gitlab-ci-python.yml'
+
+variables:
+  APP_NAME: "fastapi-template"
+  

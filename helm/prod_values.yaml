@@ -1,0 +1,17 @@
+environment: prod
+
+ingress:
+  dnsUrl: template.prod-<URL>.de
+  host: template
+
+env:
+  - name: "IS_LOCAL"
+    value: "False"
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 512Mi
+  requests:
+    cpu: 150m
+    memory: 256Mi

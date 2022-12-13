@@ -1,0 +1,42 @@
+# THIS FILE OVERWRITES THE DEFAULT VALUES IN FOR THE TESTCLUSTER DEPLOYMENT OF THIS APP
+
+# how many pods (instances) should be created by default. Usually just one.
+replicaCount: 2
+
+# Environment definition, can be "test", "kons" or "prod"
+environment: test
+
+# ingress Reverseproxy URL defintion
+# usually "appname-%environment"
+# the application also gets other default urls
+ingress:
+  dnsUrl: template-test.<URL>.de
+  host: template-test
+
+# definition of the Environment Variables which are used in the application (Usually in app/configuration/getConfig.py for the whole app)
+# Passwords should not be set here, instead use CI/CD Variables in Gitlab,
+env:
+  - name: "IS_LOCAL"
+    value: "False"
+
+# Ressource limits which the kubernets cluster needs to supply that the app can run.
+resources:
+  # upper bound of the limit. Thats what the service can get at most
+  # 300m means 0,3 CPU Cores, 1 Core can be specified as 1
+  # RAM is specified in Megabyte.
+  limits:
+    cpu: 300m
+    memory: 512Mi
+  # lower bound of the limit. THats what the service needs at leas to start.
+  # FastAPI/Python Apps usually start quite low if no traffic is availabe, 150m - 250m CPU should be enough
+  requests:
+    cpu: 50m
+    memory: 128Mi
+
+# If the ressources.requests.cpu limit is exceeded by the in targetCPUUtilizationPercentage specified percentage,
+# than another replica is spawned in the kubernetes cluster till maxReplicas is reached.
+# can be different for each environment, usually just needed for production.
+horizontalPodAutoscaler:
+  minReplicas: 2
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 1400

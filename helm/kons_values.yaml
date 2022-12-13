@@ -1,0 +1,17 @@
+environment: kons
+
+ingress:
+  dnsUrl: template-kons.t<URL>.de
+  host: template-kons
+
+env:
+  - name: "IS_LOCAL"
+    value: "False"
+
+resources:
+  limits:
+    cpu: 300m
+    memory: 512Mi
+  requests:
+    cpu: 150m
+    memory: 256Mi
