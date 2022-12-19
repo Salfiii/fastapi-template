@@ -1,103 +1,116 @@
-# Python [FastAPI](https://fastapi.tiangolo.com/) Template Project wie [poetry](https://python-poetry.org/)
+# Python [Fastapi](https://fastapi.tiangolo.com/) Template Project like [poetry](https://python-poetry.org/)
 
-## Tutorials zur Verwendeten Technologie:
-- [FastAPI](https://fastapi.tiangolo.com/tutorial/)
-- [FastAPI & Docker](https://fastapi.tiangolo.com/deployment/docker/)
+## used frameworks/technologies:
+- [Fastapi](https://fastapi.tiangolo.com/tutorial/)
+- [Fastapi & Docker](https://fastapi.tiangolo.com/deployment/docker/)
 - [Poetry](https://python-poetry.org/)
 - [Docker](https://www.docker.com/101-tutorial)
 - [Helm](https://opensource.com/article/20/5/helm-charts)
-- 
-## Dokumentation:
 
-### Dateistruktur:
+## How to use the template
+
+1. Clone the template (Or use the "Use this template" button in GitHub directly!)
+    - ``git clone https://github.com/Salfiii/fastapi-template.git``
+2. remove the ".git"-Folder from the local repository to delete the reference to the template project
+3. create a new git repository locally
+4. (install [poetry](https://python-poetry.org/docs/) if you want to run it locally)
+5. Install [Docker](https://www.docker.com/products/docker-desktop/) or use a remote machine if you have one
+6. change the project name from "fastapi-template" to something to your likings (you can also run it directly, if you like so)
+   - in the parent Folder "fastapi-template"
+   - in the [pyproject.toml](pyproject.toml)
+   - in the [main.py](app/main.py)
+   - in the [dockerfile](Dockerfile)
+7. Run the dockerfile (you can change "fastapi-template" to whatever you like):
+   - ``docker build -t fastapi-template . && docker run -it -p 50001:8080 fastapi-template``
+   - If you want to remove the dockerfile after exiting the service automatically, add "--rm" before "-it"
+   - You can change the port 50001 to whatever port you want to use on your host
+8. Open http://localhost:50001 in your browser and you should see the OpenAPI docs.
+
+## Documentation:
+
+### file structure:
 
 #### [app](app)
-Enthält die eigenliche Python Applikation.
-- **[configuration](app/configuration)**:
-    - **_[getConfig.py](app/configuration/getConfig.py)_**:
-        - Zentrale [Singleton](https://de.wikipedia.org/wiki/Singleton_(Entwurfsmuster)) Konfigurationsklasse
-        - Liest die config.ini ein und stellt die Werte bereit
-    - **_[config.ini](app/configuration/config.ini)_**:
-        - Zentrale Konfigurationselemente/Einstellungen welche an x stellen im Code verwendet werden.
-        - Hier keine Umgebungsspezifische (Test/Prod) Konfiguration vornehmen, dies geschieht über den Helm-Chart.
+Contains the general python application.
+- **[Configuration](app/configuration)**:
+     - **[GetConfig.py](app/configuration/getConfig.py)**:
+         - central [Singleton](https://en.wikipedia.org/wiki/Singleton_pattern) configuration class
+         - read the config.ini and provide the values
+     - **[config.ini](app/configuration/config.ini)**:
+         - Central configuration elements/settings that are used in the code at x areas.
+         - Do not make an ambient-specific (test/product) configuration here, this happens via the helmet chart.
 - **[dal](app/dal)**:
-    - Falls eine Datenbank als Quelle oder Senke verwendet wird, beinhaltet dieser Order die Connect-Klasse und ggf. die ORM-Modelle.
-        - Für relationale Datenbanken: [SQLAlchemy](https://www.sqlalchemy.org/)
-        - Für MongoDB: [PyMongo](https://pymongo.readthedocs.io/en/stable/)
-- **[gui](app/gui)**:
-    - Falls die Applikation eine JavaScript GUI enthält wird diese hier abgelegt.
-- **[routers](app/routers)**:
-    - Enthält die Definition der FastAPI REST-Endpunkte
-    - **_[config.py](app/routers/config.py)_**
-        - enthält die beiden Standardenpunkte:
-            - "/actuator/health": 
-                - Kubernets Health Check Endpoint. Dieser wird von Kubernets verwendet um den Gesundheitszustand des Services zu prüfen.
-                - Hier sollten alle zwingend notwendigen Umsysteme überprüft werden ohne welche die App nicht funktionieren kann wie z.B. die zugehörige Datenbank etc.
-                - Das von K8s erwartete Return-Format ist im Endpunkt selbst einsehbar.
-            - "/config": liefert die im service hinterlegte Konfiguration zurück, vgl. "getConfig.py". Passwörter etc. werden ausgeblendet.
-    - **_[benchmark.py](app/routers/benchmark.py)_**
-        - Testenpunkte für Benchmarkzwecke. Sollte in finaler App gelöscht werden.
-            - ACHTUNG: auch Referenz in [main.py](app/main.py) und unter [tests](tests/test_routers/test_routers.py) entfernen!
-- **_[gunicorn_conf.py](app/gunicorn_conf.py)_**
-    - Konfigurationsdatei für den WSGI HTTP Server [Gunicorn](https://gunicorn.org/)
-    - Die Datei ist ebenfalls im Base-Image enthalten und kann theoretisch entfern werden.
-- **_[main.py](app/main.py)_**
-    - Einstiegspunkt/Main in die Applikation.
-    - Enthält keine Endpunkte/Logik. Die Endpunkte werden in den routers definiert.
+     -If a database is used as a source or sink, this order includes the Connect class and, if necessary, the Orm models.
+         - For relational databases: [SQLALCHEMY](https://www.sqlalchemy.org/)
+         - for Mongodb: [Pymongo](https://pymongo.readthedocs.io/en/stable/)
+- **[GUI](app/gui)**:
+     - If the application contains a JavaScript GUI, it will be stored here.
+- **[Routers](app/routers)**:
+     - contains the definition of the Fastapi residual endpoints
+     - **[config.py](app/routers/config.py)**
+         - Contains the two standard points:
+             - "/Actuator/Health":
+                 - Kubernets Health Check Endpoint. This is used by Kubernetes to check the health status of the service.
+                 - All mandatory converter should be checked here without which the app cannot work such as the associated database etc.
+                 - The return format expected by K8S can be viewed in the end point itself.
+             - "/config": delivers the configuration stored in the service, see "Getconfig.py". Passwords etc. are hidden.
+     - **[benchmark.py](app/routers/benchmark.py)**
+         - Test points for benchmark purposes. Should be deleted in the final app.
+             - Attention: also remove the reference in [main.py](app/main.py) and under [tests](tests/test_routers/test_routers.py)!
+- **[gunicorn_conf.py](app/gunicorn_conf.py)**
+     - Configuration file for the WSGI HTTP Server [Gunicorn](https://gunicorn.org/)
+     - The file is also included in the base image and can be theoretically removed.
+- **[main.py](app/main.py)**
+     - Entry point/Main in the application.
+     - contains no end points/logic. The end points are defined in the routers.
 
 #### [bin](bin)
-Ablage von verwendeten Binaries wie z.B. CMD-Apps die aus dem Python Code aufgerufen werden wie Tesseract etc.
-I.d.R. leer und kann entfernt werden.
+Place for binaries such as CMD apps called from the Python code like Google Tesseract etc.
+Often empty and can be removed.
 
 #### [docs](docs)
-Ablageort für Dokumentationen
+Local location for documentation
 
-#### [helm](helm)
-Applikations- und Umgebungsspezifische (Test/Kons/Prod) HELM-Dateien.
-Enthält folgende 3 Dateien welche die Umgebungsspezifischen Werte für test, kons und prod definieren.
-Es müssen nicht alle Werte gesetzt sein, dann werden die o.g. Defaults verwendet.
-- [test_values.yaml](helm/test_values.yaml): Testumgebung -> **Diese Datei beeinhaltet eine Erläuterung der verschiedenen Möglichkeiten**
-- [kons_values.yaml](helm/kons_values.yaml): Konsolidierungsumgebung
-- [prod_values.yaml](helm/prod_values.yaml): Produktionsumgebung
+#### [Helm](helm)
+Application and ambient-specific (test/consumption) helmet files.
+Contains the following 3 files that define the environment -specific values for test, consumption and prod.
+Not all values have to be set, then the above defaults are used.
+- [test_values.yaml](helm/test_values.yaml): Test environment -> ** This file includes an explanation of the different options **
+- [Kons_values.yaml](helm/kons_values.yaml): Consolidation environment
+- [Prod_values.yaml](helm/prod_values.yaml): Production environment
 
 #### [tests](tests)
-- Ablageort für die Tests welche mit dem [PyTest-Framwork](https://docs.pytest.org/en/6.2.x/) erstellt werden.
-- Dokumentation für die Erstellung von [Tests für FastAPI](https://fastapi.tiangolo.com/tutorial/testing/)
-- Um die Tests auszuführen: Rechtsklick auf den Test-Ordner -> "Run 'pytests' in tests 
-- Test-Beispiele sind enthalten
+- Location for the tests which are created with the [pytest framework](https://docs.pytest.org/en/6.2.x/).
+- Documentation for the creation of [tests for Fastapi](https://fastapi.tiangolo.com/tutorial/testing/)
+-To carry out the tests: Right-click on the test folder -> "Run 'Pytests' in tests
+- Test examples are included
 
-#### [tmp](tmp)
+#### [tmp] (tmp)
 1. [in](tmp/in)
-    - Wird zur (temporären) Ablage von Input-Dateien für den Service verwendet, z.B. beim File-upload etc.
-    - Der Pfad kann über die Variable "in_folder" der [Config-Klasse](app/configuration/getConfig.py) abgerufen werden.
+     -is used for the (temporary) storage of input files for the service, e.g. for file upload etc.
+     - The path can be called up via the variable "in_folder" of the [Config class] (app/configuration/getConfig.py).
 2. [out](tmp/out)
-    - Wird zur (temporären) Ablage von Output-Dateien des Services verwendet. 
-    Wenn der Service also etwas schreibt, bitte hier ablegen. 
-    - Der Pfad kann über die Variable "out_folder" der [Config-Klasse](app/configuration/getConfig.py) abgerufen werden.
-3. [test](tmp/test)
-    - Kann zur Ablage von Skripten etc. verwendet werden um Dinge auszuprobieren.
+     - is used for the (temporary) storage of output files of the service.
+     So if the service writes something, please put it here.
+     - The path can be called up via the variable "Out_Folder" of the [Config-Class] (app/configuration/getConfig.py).
+3. [Test](tmp/test)
+     - Can be used to keep scripts etc. to try things out.
 
-#### - weitere Dateien -
+#### - additional files -
 
-3. [Dockerfile](Dockerfile)
-    - Dockerfile welches die Erstellung des Docker-Containers orchestriert.
-    - Eine Dokumentation der Befehle liegt im File selbst vor
-4. [version.txt](version.txt)
-    - Aktuelle Version der Applikation. Wird am Ende in der OpenAPI/Swagger Doc Oberfläche angezeigt und sollte bei jeder Änderung nach oben gezählt werden.
-5. [.gitlab-ci.yml](.gitlab-ci.yml)
-    - GitLab bzw. die zugehörigen Pipelines prüfen ob eine solche Datei existiert. Falls ja, wird die darin aufgeführte
-      Referenz auf ein ci/cd-Projekt verwendet um das Projekt zu bauen und bereitzustellen.
-6. [Readme.md](README.md)
-    - Dokumentation (this!)
-7. [.gitignore.](.gitignore)
-    - Beinhaltet verweise auf Dateien/Ordner welche von git ignoriert werden sollen.
-    - Alles hier enthaltene wird nicht versioniert.
-8. [pyproject.toml](pyproject.toml)
-    - [Poetry project file](https://python-poetry.org/docs/pyproject/)
-
-# Ausführung des Templates:
-Folgende Umbebungsvariablen werden benötigt für die lokale Ausführung:
-
-PYTHONUNBUFFERED=1;
-SERVICE_URL=127.0.0.1:8000;
-IS_LOCAL=True;
+1. [Dockerfile](./Dockerfile)
+     - Docker file that orchestrates the creation of the Docker container.
+     - A documentation of the commands is in the file itself
+2. [version.txt](version.txt)
+     - Current version of the application. Is shown in the OpenAPI/Swagger Doc surface at the end and should be up at every change
+to be counted.
+3. [.gitlab-ci.yml](.gitlab-ci.yml)
+     - Gitlab or the associated pipelines check whether such a file exists. If so, the one listed in it
+       Reference to a CI/CD project used to build and provide the project.
+4. [README.md](README.md)
+     - Documentation (this!)
+5. [gitignore.](.gitignore)
+     - includes references to files/folders which are to be ignored by git.
+     - Everything contained here is not versioned.
+6. [pyproject.toml](pyproject.toml)
+     - [Poetry Project File] (https://python-poetry.org/docs/pyproject/)

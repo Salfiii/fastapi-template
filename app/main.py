@@ -7,7 +7,6 @@ from app.routers import config, benchmark
 # get the config file
 configuration = Config()
 
-# SET THE API-ID: DO NOT CHANGE THIS!
 API_ID = configuration.API_ID
 API_VERSION = configuration.API_VERSION
 

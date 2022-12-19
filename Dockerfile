@@ -29,7 +29,7 @@ ENV PYTHONUNBUFFERED=1 \
     \
     # poetry
     # https://python-poetry.org/docs/configuration/#using-environment-variables
-    POETRY_VERSION=1.2.0a2 \
+    POETRY_VERSION=1.3.0 \
     # make poetry install to this location
     POETRY_HOME="/opt/poetry" \
     # make poetry create the virtual environment in the project's root
@@ -60,8 +60,6 @@ RUN mkdir -p ${POETRY_VIRTUALENVS_PATH}
 #RUN find /app -type f -exec chmod 644 {} \;
 #RUN find ${POETRY_VIRTUALENVS_PATH} -type d -exec chmod 755 {} \;
 #RUN find ${POETRY_VIRTUALENVS_PATH} -type f -exec chmod 644 {} \;
-COPY start.sh /app/start.sh
-COPY ./imageversion.txt /app/imageversion.txt
 WORKDIR /app/
 
 # Create the tmp directorys for file processing
@@ -94,14 +92,12 @@ ENV HOST=0.0.0.0
 ENV PORT=8080
 ENV LOG_LEVEL=error
 
-# set timezone
-ENV TZ Europe/Berlin
 # Copy the conda environment infos (the "app"-Folder already exists, use this one to include everythin you need!)
 COPY ./poetry.lock poetry.lock
 COPY ./pyproject.toml pyproject.toml
 # Install the python packages
 WORKDIR app/
-ENV POETRY_EVN=fastapi-template
+ENV POETRY_ENV=fastapi-template
 RUN poetry install --without dev
 
 # Copy application contents to the container
@@ -124,7 +120,7 @@ WORKDIR /app
 RUN whoami
 #RUN ls -la
 CMD /.venv/activate
-#RUN poetry env use ${POETRY_EVN}
+RUN poetry env info
 
 CMD [ "gunicorn", "--worker-class", "uvicorn.workers.UvicornWorker", "--config", "/app/app/gunicorn_conf.py", "main:app"]
 # Start Gunicorn
