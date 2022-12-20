@@ -1,4 +1,4 @@
-# Python [Fastapi](https://fastapi.tiangolo.com/) Template Project like [poetry](https://python-poetry.org/)
+# Python [Fastapi](https://fastapi.tiangolo.com/) Template Project with[poetry](https://python-poetry.org/) and [Docker](https://www.docker.com/101-tutorial)
 
 ## used frameworks/technologies:
 - [Fastapi](https://fastapi.tiangolo.com/tutorial/)
